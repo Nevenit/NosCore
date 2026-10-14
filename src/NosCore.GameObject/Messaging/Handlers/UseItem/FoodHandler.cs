@@ -34,6 +34,11 @@ namespace NosCore.GameObject.Messaging.Handlers.UseItem
                 return;
             }
 
+            if (!character.IsSitting && !character.CanSitDown(clock.GetCurrentInstant()))
+            {
+                return;
+            }
+
             // Set rather than toggled: two meals handled at once must not stand the character back up.
             if (!character.IsSitting)
             {

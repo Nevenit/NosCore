@@ -156,6 +156,8 @@ The maximum comes from the parser, so re-run it on an existing database first.
 - [ ] Attack a monster and press sit: nothing happens and no message appears
 - [ ] Stop attacking: sitting works again about three seconds after your last attack, even if
       the monster died sooner
+- [ ] Attack a monster and eat a Roasted Herring within three seconds: nothing happens and it
+      stays in the inventory
 - [ ] Sit with a Roasted Herring digesting and let a monster hit you: you stand up and the
       green numbers stop
 

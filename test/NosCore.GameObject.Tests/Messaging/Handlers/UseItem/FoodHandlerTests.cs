@@ -117,6 +117,32 @@ namespace NosCore.GameObject.Tests.Messaging.Handlers.UseItem
         }
 
         [TestMethod]
+        public async Task FoodWaitsThreeSecondsAfterAttacking()
+        {
+            await new Spec("Eating sits the character down, so it waits out the same lock as sitting")
+                .Given(A_Restoring_Hp_Mp, ItemType.Food, 700, 700)
+                .And(TheCharacterIsStanding)
+                .And(TheCharacterAttacked_MillisecondsAgo, 2900)
+                .WhenAsync(EatingIt)
+                .Then(ItemCountShouldBe_, 1)
+                .And(TheCharacterShouldBeStanding)
+                .ExecuteAsync();
+        }
+
+        [TestMethod]
+        public async Task FoodWorksThreeSecondsAfterAttacking()
+        {
+            await new Spec("Once the lock is over the meal is eaten")
+                .Given(A_Restoring_Hp_Mp, ItemType.Food, 700, 700)
+                .And(TheCharacterIsStanding)
+                .And(TheCharacterAttacked_MillisecondsAgo, 3000)
+                .WhenAsync(EatingIt)
+                .Then(ItemCountShouldBe_, 0)
+                .And(TheCharacterShouldBeSitting)
+                .ExecuteAsync();
+        }
+
+        [TestMethod]
         public async Task ADeadCharacterCannotEat()
         {
             await new Spec("A dead character's food is kept")
@@ -189,6 +215,12 @@ namespace NosCore.GameObject.Tests.Messaging.Handlers.UseItem
         private void TheCharacterIsSitting() => _session.Character.IsSitting = true;
 
         private void TheCharacterShouldBeSitting() => Assert.IsTrue(_session.Character.IsSitting);
+
+        private void TheCharacterShouldBeStanding() => Assert.IsFalse(_session.Character.IsSitting);
+
+        private void TheCharacterAttacked_MillisecondsAgo(int milliseconds) =>
+            _session.Character.LastAttack =
+                TestHelpers.Instance.Clock.GetCurrentInstant() - NodaTime.Duration.FromMilliseconds(milliseconds);
 
         private void TheCharacterIsDead() => _session.Character.IsAlive = false;
 
